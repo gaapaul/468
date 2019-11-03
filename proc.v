@@ -21,7 +21,7 @@ module simple_proc_data_proc(
    fetch_fsm = 4'd1,
    load_reg_fsm = 4'd2,
    alu_fsm = 4'd3,
-   writeback_fsm = 4'd4,
+   writeback_fsm = 4'd4;
   reg [3:0]         next_state;
   reg [3:0]         current_state;
   //decode logic 
@@ -197,8 +197,7 @@ end
     (condition_code == 2'b01 && zero == 1'b1) || //equal
     (condition_code == 2'b10 && (negative == overflow)) || //greater or equal
     (condition_code == 2'b11 && (negative != overflow))) begin //less than
-    //do calc
-       = 1'b1;
+    //do calc       condition_code_success= 1'b1;
     end else begin
       //dont do 
       condition_code_success = 1'b0;
