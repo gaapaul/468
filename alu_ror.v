@@ -2,7 +2,6 @@ module alu_ror(
   input [15:0] operand1,
   input [3:0] immediate_offset,
   output reg [15:0] dout);
-  genvar i;
 
   always@(*)
   begin

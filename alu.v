@@ -1,17 +1,15 @@
-//This will do math and
-`default_nettype none
 module simple_proc_alu(
-  input wire         clk,
-  input wire         rst_n,
-  input wire  [3 :0] opcode,
-  input wire  [15:0] operand_1,
-  input wire  [15:0] operand_2,
-  input wire  [6 :0] immediate_offset,
-  output wire [15:0] result,
-  output wire        overflow,
-  output wire        carry,
-  output wire        negative,
-  output wire        zero);
+  input         clk,
+  input         rst_n,
+  input  [3 :0] opcode,
+  input  [15:0] operand_1,
+  input  [15:0] operand_2,
+  input  [6 :0] immediate_offset,
+  output [15:0] result,
+  output        overflow,
+  output        carry,
+  output        negative,
+  output        zero);
 
   reg [15:0]     result_out;
   wire [15:0]     dout;
@@ -51,73 +49,74 @@ module simple_proc_alu(
     .dout(sub_res),
     .ovf(sub_v),
     .carry(sub_c));
-  //
+  //0010
   alu_mul mult( 
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(mul_res));
-    
+  //0011
   alu_orr orr(
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(orr_res));
-    
-  alu_and alu_and(
+  //0100   
+  alu_and and(
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(and_res));
-    
+  //0101   
   alu_eor eor(
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(eor_res));
-    
+  //0110   
   alu_movn movn(
     .immediate_offset(immediate_offset),
     .dout(movn_res));
-    
+  //0111   
   alu_mov mov(
     .operand1 (operand_1),
     .dout(mov_res));
-    
+  //1000   
   alu_lsr lsr(
     .operand1 (operand_1),
     .immediate_offset(immediate_offset[3:0]),
     .dout(lsr_res));
-    
+  //1001   
   alu_lsl lsl(
     .operand1 (operand_1),
     .immediate_offset(immediate_offset[3:0]),
     .dout(lsl_res));
-    
+  //1010   
   alu_ror ror(
     .operand1 (operand_1),
     .immediate_offset(immediate_offset[3:0]),
     .dout(ror_res));
-
+  
   mux mux16(
     .sel (opcode),
-    .in0 (add_res), //add, 0000
-    .in1 (sub_res), //sub, 0001
-    .in2 (mul_res), //mul, 0010
-    .in3 (orr_res), //orr, 0011
-    .in4 (and_res), //and, 0100
-    .in5 (eor_res), //eor, 0101
+    .in0 (add_res),  //add, 0000
+    .in1 (sub_res),  //sub, 0001
+    .in2 (mul_res),  //mul, 0010
+    .in3 (orr_res),  //orr, 0011
+    .in4 (and_res),  //and, 0100
+    .in5 (eor_res),  //eor, 0101
     .in6 (movn_res), //mov, 0110
-    .in7 (mov_res), //movn,0111
-    .in8 (lsr_res), //lsr,
-    .in9(lsl_res),  //lsl
-    .in10(ror_res), //ror
-    .in11(sub_res),   //cmp
-    .in12(movn_res), //adr
-    .in13(16'b0),   //ldr
-    .in14(16'b0),   //str
-    .in15(16'b0),   //nop
+    .in7 (mov_res),  //movn,0111
+    .in8 (lsr_res),  //lsr, 1000
+    .in9(lsl_res),   //lsl, 1001
+    .in10(ror_res),  //ror, 1010
+    .in11(sub_res),  //cmp, 1011
+    .in12(movn_res), //adr, 1100
+    .in13(16'b0),    //ldr, 1101
+    .in14(16'b0),    //str, 1110
+    .in15(16'b0),    //nop, 1111
     .out (dout));
     
-    //takes opcode, result and calculated flags
-    //outpus correct flag and if it should update
+    //takes opcode, result, and calculated flags
+    //outputs correct flag and if it should update
     //outputs if result should update
+
   flag_sel flag_sel(
    .opcode(opcode),
    .result(dout),
@@ -131,20 +130,7 @@ module simple_proc_alu(
    .neg (neg),
    .carry (c), 
    .zero (z));
-  /*
-  always@(*) begin
-    if((condition_code == 2'b00) || //no condition
-    (condition_code == 2'b01 && zero == 1'b1) || //equal
-    (condition_code == 2'b10 && (negative == overflow)) || //greater or equal
-    (condition_code == 2'b11 && (negative != overflow))) begin //less than
-    //do calc
-      //condition_code_success = 1'b1;
-    end else begin
-      //dont do 
-      //condition_code_success = 1'b0;
-    end
-  end
-  */
+
   always @(posedge clk or negedge rst_n) begin //flop output
     if(rst_n == 1'b0) begin
       v_reg <= 1'b0;
@@ -176,6 +162,5 @@ module simple_proc_alu(
   assign zero = z_reg;
   assign negative= n_reg;
   assign result = result_out;
-  //assign result_vld = alu_result_vld;
 
 endmodule

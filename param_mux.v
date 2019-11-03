@@ -1,24 +1,24 @@
-module mux #(parameter w = 16, parameter i = 4) (
-  input wire [i-1:0] sel,
-  input wire [w-1:0] in0,
-  input wire [w-1:0] in1,
-  input wire [w-1:0] in2,
-  input wire [w-1:0] in3,
-  input wire [w-1:0] in4,
-  input wire [w-1:0] in5,
-  input wire [w-1:0] in6,
-  input wire [w-1:0] in7,
-  input wire [w-1:0] in8,
-  input wire [w-1:0] in9,
-  input wire [w-1:0] in10,
-  input wire [w-1:0] in11,
-  input wire [w-1:0] in12,
-  input wire [w-1:0] in13,
-  input wire [w-1:0] in14,
-  input wire [w-1:0] in15,
-  output wire [w-1:0] out);
+module mux(
+  input [3:0] sel,
+  input [15:0] in0,
+  input [15:0] in1,
+  input [15:0] in2,
+  input [15:0] in3,
+  input [15:0] in4,
+  input [15:0] in5,
+  input [15:0] in6,
+  input [15:0] in7,
+  input [15:0] in8,
+  input [15:0] in9,
+  input [15:0] in10,
+  input [15:0] in11,
+  input [15:0] in12,
+  input [15:0] in13,
+  input [15:0] in14,
+  input [15:0] in15,
+  output [15:0] out);
   
-  reg [w-1:0] reg_out;
+  reg [15:0] reg_out;
   always @(*) begin
     case(sel)
         4'b0000: 
