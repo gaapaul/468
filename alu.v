@@ -1,4 +1,16 @@
-module simple_proc_alu(
+//Simple CPU which takes two operands a opcode and some immediate bits which are used to perform instructions
+//The result is calculated in 1 cycle
+//operand1 is used for all single operand instructions
+
+//4 Flags N,C,V,Z are updated by the ALU on arithmetic instructions and CMP
+//MUL does not update C or V flag similar to ARMv5T and above as the flags are meaningless for the operation
+
+//Condition flags will be checked outside of the ALU as they are used to determine if result reg shall be updated after ALU operations
+  //Condition Code logic that will be used can be seen in flag_sel module, it is commented out
+  //It is planned that condition code logic will change the FSM behavior so regs are not written to
+
+//Shift registers are not parametrized output and input size are always 16 bits
+  module simple_proc_alu(
   input         clk,
   input         rst_n,
   input  [3 :0] opcode,
@@ -60,7 +72,7 @@ module simple_proc_alu(
     .operand2 (operand_2),
     .dout(orr_res));
   //0100   
-  alu_and and(
+  alu_and alu_and(
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(and_res));
