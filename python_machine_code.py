@@ -1,4 +1,5 @@
 #python script to interpret arm commands and turn them into machine code for my compiler
+import sys
 def decode_condition(two_characters):
     switcher = {
         '' : 0,
@@ -28,12 +29,17 @@ def decode_opcode(three_characters):
     }
     return switcher.get(three_characters,"nothing")
 
-
-with open('armtext.txt') as f:
+text_file = sys.argv[1]
+print(text_file)
+with open(text_file) as f:
+    wr = open('data.txt', "w")
     line_number = 0
     din = ""
     for line in f:
+        #print (line)
         din=""
+        if (line[0] == "/"):
+            continue
         line_number = line_number + 1
         decode_line= line.split(',')
         #zero data
@@ -102,9 +108,9 @@ with open('armtext.txt') as f:
             din =str(condition)
             din+=str(opcode)
             din+=str(destination_reg)
-            if(opcode == "0111"):
+            if(opcode_string == "CMP"): #11 is compare and not move :)
+                din+=str(destination_reg)
                 din+=str(operand_1)
-                din+=str(operand_2)
                 din+=(str(0)) #extra bit
             else:
                 din+=str(immediate_operand)    
@@ -149,4 +155,7 @@ with open('armtext.txt') as f:
         #print("data_in_reg <= 16'b"+din+";")
         #print(din)
         #print("#60")
-        print(hex(int(din,2)))
+
+        wr.write(hex(int(din,2))[2:]+"\n")
+
+wr.close()

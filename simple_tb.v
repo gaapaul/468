@@ -50,7 +50,7 @@ module simple_tb();
     reset <= 0;
     data_in_reg <= 0;
     write_en_reg <= 1;
-    for(i = 0; i < 64; i=i+1) begin
+    for(i = 0; i < 64000000; i=i+1) begin
       if (ram_dout == 16'h3c00) begin
         #20;
         $writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);

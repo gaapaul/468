@@ -217,13 +217,13 @@ always@(posedge clk or negedge rst_n) begin
       end
       reset <= (($random % 100) == 0) ? 1'b1 : 1'b0; //rare to have reset
       if(rst_n == 1'b1) begin
-          // $display("\n");
-          // $display("Instruction Number:%d", i);
-          // $display("opcode:%d,Op1:%d,Op2:%d,Ioffset:%d,Result:%d",opcode_d,op1_reg_d,op2_reg_d,io_d,dout);
-          // $display("Signed: Op1:%d,Op2:%d,Ioffset:%d,Result:%d",$signed(op1_reg_d),$signed(op2_reg_d),$signed(io_d),$signed(dout));
-          // $display("V:%d,C:%d,N:%d,Z:%d", overflow,carry,negative,zero);
-          // $display("TB: %d", ref_res);
-          // $display("Sgined TB: %d", $signed(ref_res[15:0]));
+          $display("\n");
+          $display("Instruction Number:%d", i);
+          $display("opcode:%d,Op1:%d,Op2:%d,Ioffset:%d,Result:%d",opcode_d,op1_reg_d,op2_reg_d,io_d,dout);
+          $display("Signed: Op1:%d,Op2:%d,Ioffset:%d,Result:%d",$signed(op1_reg_d),$signed(op2_reg_d),$signed(io_d),$signed(dout));
+          $display("V:%d,C:%d,N:%d,Z:%d", overflow,carry,negative,zero);
+          $display("TB: %d", ref_res);
+          $display("Sgined TB: %d", $signed(ref_res[15:0]));
           
           if(($signed(ref_res[15:0]) != $signed(dout)) && (v_ref_d == 0)) //singed calculation should be correct if currently no overflow 
             $display("Error Calc 0. Ref Res: %d, dout: %d , at time: %d", $signed(ref_res[15:0]), $signed(dout[15:0]),$time);

@@ -1,4 +1,4 @@
-//This will take input data and process it
+    //This will take input data and process it
 //
 //
 `default_nettype none
@@ -41,7 +41,6 @@ module simple_proc_data_proc(
   wire [15:0] ram_dout;
   //Reg file control 
   wire wr_en;
-  wire rd_en;
   wire [15:0] rd0_data_out;
   wire [15:0] rd1_data_out;
   wire [15:0] wr0_data_in;
@@ -138,11 +137,11 @@ end
       ctrl_ram_read_en <= 1'b0;
       ctrl_ram_write_en <= 1'b0;
     end else begin
-      //Reg file control 
+      //Reg file control
       if((opcode == 4'b1011) || (opcode == 4'b1110) || (opcode == 4'b1111)) begin
       //Don't Write to reg file if is CMP,STR,NOP
         write_back <= 1'b0;
-      end else if((alu_result_vld == 1'b1 || opcode == 4'b1101) && (condition_code_success == 1'b1)) begin 
+      end else if((alu_result_vld == 1'b1 || opcode == 4'b1101) && ((current_state == alu_fsm) || (current_state == writeback_fsm))) begin 
       //Only write to reg file if condition code pass and not cmp and not first time getting a calculation 
         write_back <= 1'b1;
       end else begin
@@ -156,7 +155,7 @@ end
       end else begin
         ctrl_ram_read_en <= 1'b0;
       end
-      if((opcode == 4'b1110) && (current_state == load_reg_fsm)) begin
+      if((opcode == 4'b1110) && (current_state == load_reg_fsm) && (condition_code_success == 1'b1)) begin
         //If it is a Store we write to RAM 
         ctrl_ram_write_en <= 1'b1;
       end else begin
@@ -197,7 +196,8 @@ end
     (condition_code == 2'b01 && zero == 1'b1) || //equal
     (condition_code == 2'b10 && (negative == overflow)) || //greater or equal
     (condition_code == 2'b11 && (negative != overflow))) begin //less than
-    //do calc       condition_code_success= 1'b1;
+    //do calc 
+      condition_code_success= 1'b1;
     end else begin
       //dont do 
       condition_code_success = 1'b0;
