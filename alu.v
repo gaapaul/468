@@ -13,10 +13,11 @@
   module simple_proc_alu(
   input         clk,
   input         rst_n,
-  input  [3 :0] opcode,
-  input  [15:0] operand_1,
-  input  [15:0] operand_2,
-  input  [6 :0] immediate_offset,
+  input 		    condition_success,
+  input [3 :0]  opcode,
+  input [15:0]  operand_1,
+  input [15:0]  operand_2,
+  input [6 :0]  immediate_offset,
   output [15:0] result,
   output        overflow,
   output        carry,
@@ -140,7 +141,7 @@
    .update_cv (update_cv),
    .ovf (ovf),
    .neg (neg),
-   .carry (c), 
+   .carry (c),
    .zero (z));
 
   always @(posedge clk or negedge rst_n) begin //flop output
@@ -152,7 +153,7 @@
       result_out <= 16'b0;
     end else begin
       //update nczv flags
-      if(update_flag_reg == 1'b1) begin
+      if((update_flag_reg == 1'b1) && (condition_success == 1'b1)) begin
         n_reg <= neg;
         z_reg <= z;
         if(update_cv == 1'b1) begin

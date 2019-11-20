@@ -22,7 +22,7 @@ module simple_tb();
  wire         overflow;
  wire        carry;
  wire         store_loaded_val;
- wire [7:0]   pc; //this is addr to program ram
+ wire [9:0]   pc; //this is addr to program ram
  wire         ram_read_en; //this is program read en
  reg start_reg;
   reg  reset;
@@ -51,6 +51,12 @@ module simple_tb();
     data_in_reg <= 0;
     write_en_reg <= 1;
     for(i = 0; i < 64000000; i=i+1) begin
+      $display(" %b ",data_in);
+      $display("c:%d",carry);
+      $display("v:%d",overflow);
+      $display("z:%d",zero);
+      $display("n:%d",negative);
+      $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.reg_file[0], proc.reg_file_8x16_1.reg_file[1],proc.reg_file_8x16_1.reg_file[2],proc.reg_file_8x16_1.reg_file[3],proc.reg_file_8x16_1.reg_file[4],proc.reg_file_8x16_1.reg_file[5],proc.reg_file_8x16_1.reg_file[6], proc.reg_file_8x16_1.reg_file[7]);
       if (ram_dout == 16'h3c00) begin
         #20;
         $writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);
@@ -74,7 +80,7 @@ module simple_tb();
     .addr(pc),
     .dout(ram_dout),
     .din(16'b0)
-  );
+  ); 
     
   assign addr_in = addr_reg;
   assign re_en = read_en_reg;

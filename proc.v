@@ -14,45 +14,39 @@ module simple_proc_data_proc(
  output wire         overflow,
  output wire        carry,
  output wire         store_loaded_val,
- output wire [7:0]   pc, //this is addr to program ram
+ output wire [9:0]   pc, //this is addr to program ram
  output wire         ram_read_en); //this is program read en
   //State machine control 
-  localparam idle_fsm = 4'b0,
-   fetch_fsm = 4'd1,
-   load_reg_fsm = 4'd2,
-   alu_fsm = 4'd3,
-   writeback_fsm = 4'd4;
-  reg [3:0]         next_state;
-  reg [3:0]         current_state;
-  //decode logic 
+  localparam idle_fsm = 2'b0,
+   fetch_fsm = 2'd1,
+   load_reg_fsm = 2'd2,
+   alu_fsm = 2'd3;
+   //writeback_fsm = 4'd4;
+  reg [1:0]         next_state;
+  reg [1:0]         current_state;
+  //decode logic
   wire [1:0] condition_code;
   wire [3:0] opcode;
-  wire [2:0] dest_reg; 
+  wire [2:0] dest_reg;
   wire [6:0] load_bits;
   wire [2:0] operand1;
   wire [2:0] operand2;
-  //ram control 
-  reg load_or_write;
-  reg write_back;
-  reg  ctrl_ram_read_en;
-  reg  ctrl_ram_write_en;
-  wire read_ram_en; 
+  //ram control
+  wire write_back;
+  wire read_ram_en;
   wire write_ram_en;
   wire [15:0] ram_dout;
-  //Reg file control 
+  //Reg file control
   wire wr_en;
   wire [15:0] rd0_data_out;
   wire [15:0] rd1_data_out;
   wire [15:0] wr0_data_in;
-  //pc counter control 
-  reg pc_counter_re_en;
-  reg [7:0] pc_counter_addr;
-  //alu control 
-  reg [15:0] alu_result_out_reg;
-  reg  condition_code_success;
+  //pc counter control
+  //alu control
+  wire condition_code_success;
   reg alu_result_vld;
   wire [15:0] alu_result_out;
-  
+
  always@(posedge clk or negedge rst_n) begin
    if(rst_n == 1'b0) begin
      current_state <= idle_fsm;
@@ -74,13 +68,9 @@ always@(*) begin
   fetch_fsm : begin //fetch data and when data is valid move to decode
     //This state loads from the program RAM outside of the CPU
     //It gives us a new 16 bit instruction
-    //Comb Logic decodes this 16 bit to start reg access
-    //registers are kinda written back to in this step as they are not needed till load reg
-    if(ram_read_en == 1'b1) begin
-      next_state = load_reg_fsm;
-    end else begin
-      next_state = fetch_fsm;
-    end
+    //Comb Logic dec odes this 16 bit to start reg access
+    //registers are kinda written back to in this step as they are not needed till load 
+    next_state = load_reg_fsm;
   end // case: fetch_fsm
   load_reg_fsm : begin //load regs from regfile and gets them to pass to alu
     //This state loads two regs from the regfile
@@ -88,125 +78,47 @@ always@(*) begin
     //Or it will prep a WB if operation is load or store
     //Mux happens combinationally by the end of this state
     //IF the condition code fails next state is fetch, and nothing shall be written to reg file or RAM
-    if(load_or_write == 1'b1) begin
-      if (condition_code_success == 1'b1) begin
-        next_state = writeback_fsm;
-      end else begin
-        next_state = fetch_fsm;
-      end
-    end else begin
-      if (condition_code_success == 1'b1) begin
+    if (condition_code_success == 1'b1) begin
         next_state = alu_fsm;
       end else begin
         next_state = fetch_fsm;
       end
-    end
+    //end
   end
   alu_fsm : begin
     //Calculation is done
-    if(alu_result_vld == 1'b1) begin
-      next_state = fetch_fsm;
-    end else begin
-      next_state = alu_fsm;
-    end
+    next_state = fetch_fsm;
   end
-  writeback_fsm : begin
+  /*writeback_fsm : begin
     //ctrl_ram_read_en or ctrl_ram_write_en is used in this stage to read or write to memory
     //address should be ready and values should be from decode logic
     next_state = fetch_fsm;
-  end
+  end*/
   endcase
 end
 
-  assign ram_read_en = (current_state == fetch_fsm) ? 1'b1 : 1'b0;
-  always @(posedge clk or negedge rst_n) begin : pc_counter_control
-      if(rst_n == 1'b0) begin
-        pc_counter_addr <= 8'b0;
-        pc_counter_re_en <= 1'b0;
-      end else begin : normal_logic
-        if(current_state == load_reg_fsm) begin
-          pc_counter_addr <= pc_counter_addr + 1'b1;
-        end
-      end
-  end // block: pc_counter_control
-    
-  always @(posedge clk or negedge rst_n) begin : ram_control
-    if(rst_n == 1'b0) begin
-      load_or_write <= 1'b0;
-      write_back <= 1'b0;
-      ctrl_ram_read_en <= 1'b0;
-      ctrl_ram_write_en <= 1'b0;
-    end else begin
-      //Reg file control
-      if((opcode == 4'b1011) || (opcode == 4'b1110) || (opcode == 4'b1111)) begin
-      //Don't Write to reg file if is CMP,STR,NOP
-        write_back <= 1'b0;
-      end else if((alu_result_vld == 1'b1 || opcode == 4'b1101) && ((current_state == alu_fsm) || (current_state == writeback_fsm))) begin 
-      //Only write to reg file if condition code pass and not cmp and not first time getting a calculation 
-        write_back <= 1'b1;
-      end else begin
-      //Default not writing 
-        write_back <= 1'b0;  
-      end
-      //Ram control 
-      if((opcode == 4'b1101) && (current_state == load_reg_fsm)) begin
-        //If it is a Load we read from RAM
-        ctrl_ram_read_en <= 1'b1;
-      end else begin
-        ctrl_ram_read_en <= 1'b0;
-      end
-      if((opcode == 4'b1110) && (current_state == load_reg_fsm) && (condition_code_success == 1'b1)) begin
-        //If it is a Store we write to RAM 
-        ctrl_ram_write_en <= 1'b1;
-      end else begin
-        ctrl_ram_write_en <= 1'b0;
-      end
-      //State machine control 
-      if((opcode == 4'b1101) || (opcode == 4'b1110)) begin
-        load_or_write <= 1'b1;
-      end else begin
-        load_or_write <= 1'b0;
-      end
+  program_counter #(.MAX_COUNT (1024),
+                    .INCREMENT_FSM (load_reg_fsm),
+                    .RE_EN_FSM (fetch_fsm)) 
+  pc_127(
+                    .clk (clk),
+                    .rst_n (rst_n),
+                    .state (current_state),
+                    .pc_counter_re_en(ram_read_en),
+                    .pc_out (pc));
 
-    end
-  end // block: ram_control
- 
-  always @(posedge clk or negedge rst_n) begin : alu_control
-    if(rst_n == 1'b0) begin
-      alu_result_vld <= 1'b0;
-    end else begin
-      if(current_state == alu_fsm) begin
-        //If we get to this state means we can start writing back to reg file
-        alu_result_vld <= 1'b1;
-      end
-    end
-  end // block: alu_control
+  ram_control #(.CALC_VALID_STATE(alu_fsm),
+                .REG_VALID_STATE(load_reg_fsm))
+  ram_control_1(
+                .clk(clk),
+                .rst_n(rst_n),
+                .opcode(opcode),
+                .state(current_state),
+                .condition_code_check(condition_code_success),
+                .write_back_to_reg(write_back),
+                .ram_re_en(read_ram_en),
+                .ram_wr_en(write_ram_en));
 
-  //decode data here
-  //MOVE TO MODULE 
-  assign condition_code = data_in[15:14];
-  assign opcode = data_in[13:10];
-  assign dest_reg = data_in[9:7];
-  assign load_bits = data_in[6:0];
-  assign operand1 = data_in[6:4];
-  assign operand2 = (opcode == 4'b1110) ? data_in[9:7] : data_in[3:1];
-  //FLAG logic 
-  always@(*) begin
-    if((condition_code == 2'b00) || //no condition
-    (condition_code == 2'b01 && zero == 1'b1) || //equal
-    (condition_code == 2'b10 && (negative == overflow)) || //greater or equal
-    (condition_code == 2'b11 && (negative != overflow))) begin //less than
-    //do calc 
-      condition_code_success= 1'b1;
-    end else begin
-      //dont do 
-      condition_code_success = 1'b0;
-    end
-  end
-  
-  //assign rd0_data_out = rd0_data_out;
-  assign read_ram_en = ctrl_ram_read_en;
-  assign write_ram_en = ctrl_ram_write_en;
   ram_rw_16x128 ram_rw(
     .clk (clk),
     .rst_n (rst_n),
@@ -216,9 +128,23 @@ end
     .dout     (ram_dout),
     .din      (rd1_data_out)
    );
+  decode_inputs input_decoder(
+    .clk (clk),
+    .rst_n (rst_n),
+    .data_in(data_in),
+    .zero(zero),
+    .negative(negative),
+    .overflow(overflow),
+    .condition_code(condition_code),
+    .opcode(opcode),
+    .dest_reg(dest_reg),
+    .operand1(operand1),
+    .operand2(operand2),
+    .load_bits(load_bits),
+    .cond_code_success(condition_code_success));
 
   assign wr_en = (current_state == fetch_fsm) ? write_back : 1'b0; //Write back only high if opcode assigns a value to dest_reg
-  //assign rd_en = (current_state == load_reg_fsm) ? 1'b1 : 1'b0; 
+  //assign rd_en = (current_state == load_reg_fsm) ? 1'b1 : 1'b0;
   assign wr0_data_in = (opcode == 4'b1101) ? ram_dout : alu_result_out[15:0]; //If load then put ram in reg file else put alu_result in reg file
   // file read in second pipeline stage and written in fifth
   reg_file_8x16 reg_file_8x16_1 (
@@ -238,6 +164,7 @@ end
       .clk    (clk),
       .rst_n  (rst_n),
       .opcode (opcode),
+      .condition_success (condition_code_success),
       .immediate_offset(load_bits),
       .operand_1(rd0_data_out),
       .operand_2(rd1_data_out),
@@ -249,7 +176,6 @@ end
       .zero(zero)
     );
     
-    //CPU outputs
-    assign pc = pc_counter_addr;
+    //CPU 
     assign result = wr0_data_in;
 endmodule
