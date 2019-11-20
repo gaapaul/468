@@ -16,7 +16,7 @@ module simple_proc_data_proc(
  output wire         store_loaded_val,
  output wire [9:0]   pc, //this is addr to program ram
  output wire         ram_read_en); //this is program read en
-  //State machine control 
+  //State machine control
   localparam idle_fsm = 2'b0,
    fetch_fsm = 2'd1,
    load_reg_fsm = 2'd2,
@@ -44,7 +44,6 @@ module simple_proc_data_proc(
   //pc counter control
   //alu control
   wire condition_code_success;
-  reg alu_result_vld;
   wire [15:0] alu_result_out;
 
  always@(posedge clk or negedge rst_n) begin
@@ -57,27 +56,20 @@ module simple_proc_data_proc(
 
 always@(*) begin
   case(current_state)
-  idle_fsm : begin //Idle state start here then move to fetch when start 
-  //Will move to here if a reset is done 
+  idle_fsm : begin //Idle state start here then move to fetch when start
+  //Will move to here if a reset is done
     if(start == 1'b1) begin
       next_state = fetch_fsm;
     end else begin
       next_state = idle_fsm;
     end
   end
-  fetch_fsm : begin //fetch data and when data is valid move to decode
+  fetch_fsm : begin
     //This state loads from the program RAM outside of the CPU
-    //It gives us a new 16 bit instruction
-    //Comb Logic dec odes this 16 bit to start reg access
-    //registers are kinda written back to in this step as they are not needed till load 
     next_state = load_reg_fsm;
-  end // case: fetch_fsm
-  load_reg_fsm : begin //load regs from regfile and gets them to pass to alu
-    //This state loads two regs from the regfile
-    //It will either move to alu state if opcode is math
-    //Or it will prep a WB if operation is load or store
-    //Mux happens combinationally by the end of this state
-    //IF the condition code fails next state is fetch, and nothing shall be written to reg file or RAM
+  end
+  load_reg_fsm : begin
+    //load regs and check if condition code succeeds to do calc also decode
     if (condition_code_success == 1'b1) begin
         next_state = alu_fsm;
       end else begin
@@ -89,17 +81,12 @@ always@(*) begin
     //Calculation is done
     next_state = fetch_fsm;
   end
-  /*writeback_fsm : begin
-    //ctrl_ram_read_en or ctrl_ram_write_en is used in this stage to read or write to memory
-    //address should be ready and values should be from decode logic
-    next_state = fetch_fsm;
-  end*/
   endcase
 end
 
   program_counter #(.MAX_COUNT (1024),
                     .INCREMENT_FSM (load_reg_fsm),
-                    .RE_EN_FSM (fetch_fsm)) 
+                    .RE_EN_FSM (fetch_fsm))
   pc_127(
                     .clk (clk),
                     .rst_n (rst_n),
@@ -128,6 +115,7 @@ end
     .dout     (ram_dout),
     .din      (rd1_data_out)
    );
+
   decode_inputs input_decoder(
     .clk (clk),
     .rst_n (rst_n),
@@ -159,7 +147,7 @@ end
       .rd0_data(rd0_data_out),
       .rd1_data(rd1_data_out));
 
-//combinational decoder here 
+//combinational decoder here
   simple_proc_alu alu(
       .clk    (clk),
       .rst_n  (rst_n),
@@ -175,7 +163,6 @@ end
       .negative(negative),
       .zero(zero)
     );
-    
-    //CPU 
+    //CPU
     assign result = wr0_data_in;
 endmodule
