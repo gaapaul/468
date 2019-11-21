@@ -55,11 +55,12 @@ module simple_tb();
       $display("v:%d",overflow);
       $display("z:%d",zero);
       $display("n:%d",negative);
-      $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.reg_file[0], proc.reg_file_8x16_1.reg_file[1],proc.reg_file_8x16_1.reg_file[2],proc.reg_file_8x16_1.reg_file[3],proc.reg_file_8x16_1.reg_file[4],proc.reg_file_8x16_1.reg_file[5],proc.reg_file_8x16_1.reg_file[6], proc.reg_file_8x16_1.reg_file[7]);
+      $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
       if (ram_dout == 16'h3c00) begin
-        #20;
-        $writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);
+        #60;
         $writememh("ram_file.txt", proc.ram_rw.ram_data);
+        //$writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);
+        $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
         $finish;
       end
       #20;

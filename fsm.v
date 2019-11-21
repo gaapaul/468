@@ -7,9 +7,9 @@ module fsm #(parameter IDLE_STATE = 2'd0,
     input rst_n,
     input condition_code_check,
     input start,
-    output reg [1:0] current_state);
+    output [1:0] curr_state);
 
-    reg [1:0] next_state;
+    reg [1:0] next_state, current_state;
 
     // Register/Current State Logic
     always@(posedge clk or negedge rst_n)
@@ -50,5 +50,7 @@ module fsm #(parameter IDLE_STATE = 2'd0,
         default: next_state = IDLE_STATE;
       endcase
     end
+    
+    assign curr_state = current_state;
 endmodule
 

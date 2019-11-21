@@ -19,7 +19,7 @@ module simple_proc_data_proc(
     fetch_fsm = 2'd1,
     load_reg_fsm = 2'd2,
     alu_fsm = 2'd3;
-  reg [1:0]          current_state;
+  wire [1:0] current_state;
   //decode logic
   wire [1:0] condition_code;
   wire [3:0] opcode;
@@ -50,9 +50,8 @@ module simple_proc_data_proc(
     .rst_n(rst_n),
     .start(start),
     .condition_code_check(condition_code_success),
-    .current_state(current_state)
+    .curr_state(current_state)
   );
-
 
   program_counter #(.MAX_COUNT (1024),
     .INCREMENT_FSM (load_reg_fsm),
@@ -121,7 +120,6 @@ module simple_proc_data_proc(
     .rd1_data(rd1_data_out)
   );
 
-  //combinational decoder here
   simple_proc_alu alu(
     .clk    (clk),
     .rst_n  (rst_n),
