@@ -1,7 +1,7 @@
 module fsm #(parameter IDLE_STATE = 2'd0, 
-			 parameter FETCH_STATE = 2'd1, 
-	         parameter LOAD_REG_STATE = 2'd2, 
-	         parameter ALU_STATE = 2'd3) (
+             parameter FETCH_STATE = 2'd1, 
+             parameter LOAD_REG_STATE = 2'd2, 
+             parameter ALU_STATE = 2'd3) (
 
 	input clk,
 	input rst_n,
