@@ -6,13 +6,13 @@ module simple_proc_data_proc(
  input wire         clk,
  input wire         rst_n,
  input wire         start,
- input wire [15:0]  data_in,
+ input wire  [15:0] data_in,
  input wire         data_vld,
- output wire [15:0] result, //output the updated reg
- output wire        zero,
+ output wire [15:0]  result, //output the updated reg
+ output wire         zero,
  output wire         negative,
  output wire         overflow,
- output wire        carry,
+ output wire         carry,
  output wire         store_loaded_val,
  output wire [9:0]   pc, //this is addr to program ram
  output wire         ram_read_en); //this is program read en
@@ -22,8 +22,7 @@ module simple_proc_data_proc(
    load_reg_fsm = 2'd2,
    alu_fsm = 2'd3;
    //writeback_fsm = 4'd4;
-  reg [1:0]         next_state;
-  reg [1:0]         current_state;
+  reg [1:0]          current_state;
   //decode logic
   wire [1:0] condition_code;
   wire [3:0] opcode;
@@ -46,43 +45,17 @@ module simple_proc_data_proc(
   wire condition_code_success;
   wire [15:0] alu_result_out;
 
- always@(posedge clk or negedge rst_n) begin
-   if(rst_n == 1'b0) begin
-     current_state <= idle_fsm;
-   end else begin
-     current_state <= next_state;
-   end
- end
+  fsm #(.IDLE_STATE(idle_fsm),
+        .FETCH_STATE(fetch_fsm),
+        .LOAD_REG_STATE(load_reg_fsm),
+        .ALU_STATE(alu_fsm))
+  fsm_state(
+        .clk(clk),
+        .rst_n(rst_n),
+        .start(start),
+        .condition_code_check(condition_code_success),
+        .current_state(current_state));
 
-always@(*) begin
-  case(current_state)
-  idle_fsm : begin //Idle state start here then move to fetch when start
-  //Will move to here if a reset is done
-    if(start == 1'b1) begin
-      next_state = fetch_fsm;
-    end else begin
-      next_state = idle_fsm;
-    end
-  end
-  fetch_fsm : begin
-    //This state loads from the program RAM outside of the CPU
-    next_state = load_reg_fsm;
-  end
-  load_reg_fsm : begin
-    //load regs and check if condition code succeeds to do calc also decode
-    if (condition_code_success == 1'b1) begin
-        next_state = alu_fsm;
-      end else begin
-        next_state = fetch_fsm;
-      end
-    //end
-  end
-  alu_fsm : begin
-    //Calculation is done
-    next_state = fetch_fsm;
-  end
-  endcase
-end
 
   program_counter #(.MAX_COUNT (1024),
                     .INCREMENT_FSM (load_reg_fsm),
