@@ -1,15 +1,15 @@
 //16x16 reg file two addr_out inputs for two data outs and one addr_in input and one data_in
 `default_nettype none
 module reg_file_8x16 (
- input wire         clk,
- input wire         rst_n,
- input wire         wr_en,
- input wire [2:0]   rd0_addr,
- input wire [2:0]   rd1_addr,
- input wire [2:0]   wr0_addr,
- input wire [15:0]  wr0_data,
- output wire [15:0] rd0_data,
- output wire [15:0] rd1_data);
+ input          clk,
+ input          rst_n,
+ input          wr_en,
+ input  [2:0]   rd0_addr,
+ input  [2:0]   rd1_addr,
+ input  [2:0]   wr0_addr,
+ input  [15:0]  wr0_data,
+ output  [15:0] rd0_data,
+ output  [15:0] rd1_data);
 
   reg [15:0]      r0;
   reg [15:0]      r1;
@@ -19,8 +19,6 @@ module reg_file_8x16 (
   reg [15:0]      r5;
   reg [15:0]      r6;
   reg [15:0]      r7;
-  reg [15:0]      rd0_dout;
-  reg [15:0]      rd1_dout;
   integer          i;
 
   always @(posedge clk) begin
