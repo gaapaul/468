@@ -14,97 +14,108 @@
   input         clk,
   input         rst_n,
   input 		    condition_success,
-  input [3 :0]  opcode,
+  input [3:0]   opcode,
   input [15:0]  operand_1,
   input [15:0]  operand_2,
-  input [6 :0]  immediate_offset,
+  input [6:0]   immediate_offset,
   output [15:0] result,
   output        overflow,
   output        carry,
   output        negative,
   output        zero);
 
-  reg [15:0]     result_out;
-  wire [15:0]     dout;
+  reg  [15:0]   result_out;
+  wire [15:0]   dout;
   //adder wire 
-  wire[15:0]     add_res;
-  wire           add_v;
-  wire           add_c;
+  wire [15:0]   add_res;
+  wire          add_v;
+  wire          add_c;
   //sub wire
-  wire[15:0]     sub_res;
-  wire           sub_v;
-  wire           sub_c;
+  wire [15:0]   sub_res;
+  wire          sub_v;
+  wire          sub_c;
   //mult wire
-  wire[15:0]     mul_res;
-  wire           mul_v;
-  wire[15:0]     orr_res,and_res,eor_res,mov_res,movn_res,lsr_res,lsl_res,ror_res;
-  reg            n_reg;
-  reg            z_reg;
-  reg            v_reg;
-  reg            c_reg;
-  wire            update_flag_reg;
-  wire            update_cv;
-  wire           ovf;
-  wire            neg;
-  wire            c;
-  wire            z;
+  wire [15:0]   mul_res;
+  wire          mul_v;
+  wire [15:0]   orr_res,and_res,eor_res,mov_res,movn_res,lsr_res,lsl_res,ror_res;
+  reg           n_reg;
+  reg           z_reg;
+  reg           v_reg;
+  reg           c_reg;
+  wire          update_flag_reg;
+  wire          update_cv;
+  wire          ovf;
+  wire          neg;
+  wire          c;
+  wire          z;
   //0000
   alu_adder adder( 
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(add_res),
     .ovf(add_v),
-    .carry(add_c));
+    .carry(add_c)
+  );
   //0001
   alu_sub subtractor( 
     .operand1 (operand_1),
     .operand2 (operand_2),
     .dout(sub_res),
     .ovf(sub_v),
-    .carry(sub_c));
+    .carry(sub_c)
+  );
   //0010
   alu_mul mult( 
     .operand1 (operand_1),
     .operand2 (operand_2),
-    .dout(mul_res));
+    .dout(mul_res)
+  );
   //0011
   alu_orr orr(
     .operand1 (operand_1),
     .operand2 (operand_2),
-    .dout(orr_res));
+    .dout(orr_res)
+  );
   //0100   
   alu_and alu_and(
     .operand1 (operand_1),
     .operand2 (operand_2),
-    .dout(and_res));
+    .dout(and_res)
+  );
   //0101   
   alu_eor eor(
     .operand1 (operand_1),
     .operand2 (operand_2),
-    .dout(eor_res));
+    .dout(eor_res)
+  );
   //0110   
   alu_movn movn(
     .immediate_offset(immediate_offset),
-    .dout(movn_res));
+    .dout(movn_res)
+  );
   //0111   
   alu_mov mov(
     .operand1 (operand_1),
-    .dout(mov_res));
+    .dout(mov_res)
+  );
   //1000   
   alu_lsr lsr(
     .operand1 (operand_1),
     .immediate_offset(immediate_offset[3:0]),
-    .dout(lsr_res));
+    .dout(lsr_res)
+  );
   //1001   
   alu_lsl lsl(
     .operand1 (operand_1),
     .immediate_offset(immediate_offset[3:0]),
-    .dout(lsl_res));
+    .dout(lsl_res)
+  );
   //1010   
   alu_ror ror(
     .operand1 (operand_1),
     .immediate_offset(immediate_offset[3:0]),
-    .dout(ror_res));
+    .dout(ror_res)
+  );
   
   mux mux16(
     .sel (opcode),
@@ -124,7 +135,8 @@
     .in13(16'b0),    //ldr, 1101
     .in14(16'b0),    //str, 1110
     .in15(16'b0),    //nop, 1111
-    .out (dout));
+    .out (dout)
+  );
     
     //takes opcode, result, and calculated flags
     //outputs correct flag and if it should update
@@ -142,7 +154,8 @@
    .ovf (ovf),
    .neg (neg),
    .carry (c),
-   .zero (z));
+   .zero (z)
+  );
 
   always @(posedge clk or negedge rst_n) begin //flop output
     if(rst_n == 1'b0) begin
@@ -169,11 +182,10 @@
       end  
     end
   end
-
+  
   assign carry = c_reg;
   assign overflow = v_reg;
   assign zero = z_reg;
   assign negative= n_reg;
   assign result = result_out;
-
 endmodule

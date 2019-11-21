@@ -1,34 +1,33 @@
 module simple_tb();
 
-  integer i;
-  reg     clk_10;
-  wire    clk;
-  wire [4:0] addr_in;
-  reg [4:0]  addr_reg;
-  wire [7:0] dout;
-  wire [7:0] din;
-  wire       re_en;
-  wire wr_en;
- 
- 
- wire         start;
- reg [15:0]  data_in_reg;
- wire [15:0]  data_in;
- wire [15:0]  ram_dout;
- wire         data_vld;
- wire [15:0] result; //output the updated reg
- wire        zero;
- wire         negative;
- wire         overflow;
- wire        carry;
- wire         store_loaded_val;
- wire [9:0]   pc; //this is addr to program ram
- wire         ram_read_en; //this is program read en
- reg start_reg;
-  reg  reset;
-  wire rst_n;
-  reg read_en_reg;
-  reg write_en_reg;
+  integer     i;
+  //clk stuff
+  reg         clk_10;
+  wire        clk;
+  reg         reset;
+  //RAM
+  reg         start_reg;
+  reg  [4:0]  addr_reg;
+  wire [4:0]  addr_in;
+  wire [7:0]  dout;
+  wire [7:0]  din;
+  wire        re_en;
+  wire        wr_en;
+  wire        ram_read_en; //this is program read en
+  reg         read_en_reg;
+  reg         write_en_reg;
+  reg  [15:0] data_in_reg;
+  wire [15:0] ram_dout;
+  wire [15:0] data_in;
+  wire [9:0]  pc; //this is addr to program ram
+  wire [15:0] result; //output the updated reg
+  wire        start;
+  wire        zero;
+  wire        negative;
+  wire        overflow;
+  wire        carry;
+  wire        rst_n;
+  //Clk assign 
   assign clk = clk_10;
   assign rst_n = ~reset;
 
@@ -93,15 +92,12 @@ module simple_tb();
     .rst_n (rst_n),
     .start (start),
     .data_in(data_in),
-    .data_vld(1'b1),
     .result(result),
     .zero(zero),
     .negative(negative),
     .overflow(overflow),
     .carry(carry),
-    .store_loaded_val(store_loaded_val),
     .pc(pc),
-    .ram_read_en(ram_read_en));
-
-
+    .ram_read_en(ram_read_en)
+  );
 endmodule

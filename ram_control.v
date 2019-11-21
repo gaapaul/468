@@ -8,8 +8,8 @@ module ram_control #(parameter CALC_VALID_STATE = 0, parameter REG_VALID_STATE =
  output      ram_re_en,
  output      ram_wr_en);
 
-  reg   write_back, ctrl_ram_read_en, ctrl_ram_write_en;
-  reg 	alu_result_vld;
+  reg write_back, ctrl_ram_read_en, ctrl_ram_write_en;
+  reg alu_result_vld;
   always @(posedge clk or negedge rst_n) begin : ram_control
     if(rst_n == 1'b0) begin
       write_back <= 1'b0;
