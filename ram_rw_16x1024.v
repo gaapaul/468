@@ -1,13 +1,12 @@
 //This is the ram for the CPU
-`default_nettype none
 module ram_rw_16x1024(
-  input wire          clk,
-  input wire          rst_n,
-  input wire          read_en,
-  input wire          write_en, 
-  input wire  [9:0]   addr,
-  input wire  [15:0]  din,
-  output wire [15:0]  dout);
+  input          clk,
+  input          rst_n,
+  input          read_en,
+  input          write_en, 
+  input  [9:0]   addr,
+  input  [15:0]  din,
+  output [15:0]  dout);
 
   integer     i;
   reg [15:0]  ram_data [1023:0];

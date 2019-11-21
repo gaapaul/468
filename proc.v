@@ -1,8 +1,5 @@
-    //This will take input data and process it
-//
-//
-`default_nettype none
-module simple_proc_data_proc(
+//This will take input data and process it
+module proc(
   input wire         clk,
   input wire         rst_n,
   input wire         start,
@@ -12,7 +9,7 @@ module simple_proc_data_proc(
   output wire        negative,
   output wire        overflow,
   output wire        carry,
-  output wire [9:0]  pc, //this is addr to program ram
+  output wire [6:0]  pc, //this is addr to program ram
   output wire        ram_read_en); //this is program read en
   //State machine control
   localparam idle_fsm = 2'b0,
@@ -53,7 +50,7 @@ module simple_proc_data_proc(
     .curr_state(current_state)
   );
 
-  program_counter #(.MAX_COUNT (1024),
+  program_counter #(.MAX_COUNT (127),
     .INCREMENT_FSM (load_reg_fsm),
     .RE_EN_FSM (fetch_fsm))
   pc_127(

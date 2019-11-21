@@ -1,5 +1,4 @@
 //16x16 reg file two addr_out inputs for two data outs and one addr_in input and one data_in
-`default_nettype none
 module reg_file_8x16 (
  input          clk,
  input          rst_n,

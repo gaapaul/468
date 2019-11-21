@@ -3,13 +3,13 @@ module program_counter #(parameter MAX_COUNT = 4, parameter INCREMENT_FSM = 2, p
   input        rst_n,
   input  [1:0] state,
   output wire  pc_counter_re_en,
-  output wire [9:0] pc_out);
+  output wire [6:0] pc_out);
 
-  reg [9:0]  pc_counter_addr;
+  reg [6:0]  pc_counter_addr;
 
   always@(posedge clk or negedge rst_n) begin : pc_counter_control
     if(rst_n == 1'b0) begin
-      pc_counter_addr <= 10'b0;
+      pc_counter_addr <= 7'b0;
     end else begin : normal_logic
       if(pc_counter_addr < MAX_COUNT) begin
         if(state == INCREMENT_FSM) begin
