@@ -27,7 +27,7 @@ always @(*) begin
     2'b11: if (neg != ovf) cc_success = 1'b1; else cc_success = 1'b0;
   endcase
 end
-assign cc_success = condition_code_success;
+assign condition_code_success = cc_success;
 endmodule
 /*
 #                  110

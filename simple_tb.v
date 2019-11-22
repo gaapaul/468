@@ -34,7 +34,6 @@ module simple_tb();
     //$dumpvars(3, hw2_q7_tb);
     //initial values
     $readmemh("data.txt", program_ram.ram_data);
-
     clk_10 <= 0;
     data_in_reg <= 0;
     reset <= 1;
