@@ -84,20 +84,18 @@ module proc(
     .din      (rd1_data_out)
   );
 
-  decode_inputs input_decoder(
-    .clk (clk),
-    .rst_n (rst_n),
-    .data_in(data_in),
+  decoding input_decoder(
+    .instruction(data_in),
     .zero(zero),
-    .negative(negative),
-    .overflow(overflow),
-    .condition_code(condition_code),
+    .neg(negative),
+    .ovf(overflow),
+    .cond(condition_code),
     .opcode(opcode),
     .dest_reg(dest_reg),
-    .operand1(operand1),
-    .operand2(operand2),
-    .load_bits(load_bits),
-    .cond_code_success(condition_code_success)
+    .source_reg1(operand1),
+    .source_reg2(operand2),
+    .load_shift(load_bits),
+    .condition_code_success(condition_code_success)
   );
 
   //Write back only high if opcode assigns a value to dest_reg
