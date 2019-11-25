@@ -29,7 +29,8 @@ always @(*) begin
 end
 assign condition_code_success = cc_success;
 endmodule
-/*
+
+/* Simulation Results
 #                  110
 # din = 1101110101101011, v: 0, z:1, n:0
 # Condition Code = 11
@@ -119,4 +120,5 @@ endmodule
 # dest_reg: 011
 # operand1: 111
 # operand2: 100
-# load_bits: 1111000*/
+# load_bits: 1111000
+*/
