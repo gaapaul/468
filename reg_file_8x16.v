@@ -1,5 +1,6 @@
 //16x16 reg file two addr_out inputs for two data outs and one addr_in input and one data_in
-`default_nettype none
+//Register file contains encoder for incoming data using the wr0_addr as a select which will be controlled by dest_reg
+//two muxs for outgoing data which are to be selected by source_reg0 and source_reg1
 module reg_file_8x16 (
  input          clk,
  input          rst_n,
@@ -21,28 +22,39 @@ module reg_file_8x16 (
   reg [15:0]      r7;
   integer          i;
 
-  always @(posedge clk) begin
-    if(wr_en == 1'b1) begin //encoder
-      case(wr0_addr)
-        4'b000: 
-          r0 <= wr0_data;
-        4'b001: 
-          r1 <= wr0_data;
-        4'b010:
-          r2 <= wr0_data;
-        4'b011:
-          r3 <= wr0_data;
-        4'b100:
-          r4 <= wr0_data;
-        4'b101: 
-          r5 <= wr0_data;
-        4'b110: 
-          r6 <= wr0_data;
-        4'b111: 
-          r7 <= wr0_data;
-      endcase
-    end
-  end // always @ (posedge clk or negedge rst_n)
+  always @(posedge clk or negedge rst_n) begin
+    if(rst_n == 1'b0) begin
+      r0 <= 16'b0;
+      r1 <= 16'b0;
+      r2 <= 16'b0;
+      r3 <= 16'b0;
+      r4 <= 16'b0;
+      r5 <= 16'b0;
+      r6 <= 16'b0;
+      r7 <= 16'b0;
+    end else begin : normal_logic_reg
+      if(wr_en == 1'b1) begin //encoder
+        case(wr0_addr)
+          4'b000: 
+            r0 <= wr0_data;
+          4'b001: 
+            r1 <= wr0_data;
+          4'b010:
+            r2 <= wr0_data;
+          4'b011:
+            r3 <= wr0_data;
+          4'b100:
+            r4 <= wr0_data;
+          4'b101: 
+            r5 <= wr0_data;
+          4'b110: 
+            r6 <= wr0_data;
+          4'b111: 
+            r7 <= wr0_data;
+        endcase
+      end
+    end // always @ (posedge clk or negedge rst_n)
+  end
   mux_3x8 mux_source_reg_1(
     .sel (rd0_addr),
     .in0 (r0),
@@ -68,5 +80,4 @@ module reg_file_8x16 (
     .in7 (r7),
     .out (rd1_data)
   );
-
 endmodule

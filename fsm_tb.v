@@ -44,3 +44,34 @@ module fsm_tb();
     .current_state(result_state)
   );
 endmodule
+
+/* Simulation Results
+#   0 Processor FSM
+#  15 State = 0, Condition Code = 1, Start Code = 0, Reset = 1
+#  25 State = 0, Condition Code = 1, Start Code = 0, Reset = 1
+#  35 State = 0, Condition Code = 1, Start Code = 0, Reset = 1
+#  45 State = 0, Condition Code = 1, Start Code = 0, Reset = 1
+#  55 State = 0, Condition Code = 0, Start Code = 1, Reset = 1
+#  65 State = 1, Condition Code = 0, Start Code = 1, Reset = 1
+#  75 State = 2, Condition Code = 0, Start Code = 1, Reset = 1
+#  85 State = 1, Condition Code = 0, Start Code = 1, Reset = 1
+#  95 State = 2, Condition Code = 0, Start Code = 1, Reset = 1
+# 105 State = 1, Condition Code = 0, Start Code = 1, Reset = 1
+# 115 State = 2, Condition Code = 0, Start Code = 1, Reset = 1
+# 125 State = 1, Condition Code = 0, Start Code = 1, Reset = 1
+# 135 State = 2, Condition Code = 0, Start Code = 1, Reset = 1
+# 145 State = 1, Condition Code = 0, Start Code = 1, Reset = 1
+# 155 State = 2, Condition Code = 1, Start Code = 1, Reset = 1
+# 165 State = 3, Condition Code = 1, Start Code = 1, Reset = 1
+# 175 State = 1, Condition Code = 1, Start Code = 1, Reset = 1
+# 185 State = 2, Condition Code = 1, Start Code = 1, Reset = 1
+# 195 State = 3, Condition Code = 1, Start Code = 1, Reset = 1
+# 205 State = 1, Condition Code = 1, Start Code = 1, Reset = 1
+# 215 State = 2, Condition Code = 1, Start Code = 1, Reset = 1
+# 225 State = 3, Condition Code = 1, Start Code = 1, Reset = 1
+# 235 State = 1, Condition Code = 1, Start Code = 1, Reset = 1
+# 245 State = 2, Condition Code = 1, Start Code = 1, Reset = 1
+# 255 State = 0, Condition Code = 1, Start Code = 1, Reset = 0
+# 265 State = 0, Condition Code = 1, Start Code = 1, Reset = 0
+# 275 State = 0, Condition Code = 1, Start Code = 1, Reset = 0
+*/

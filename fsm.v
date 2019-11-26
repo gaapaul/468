@@ -1,3 +1,4 @@
+//FSM follows a fetch,decode,execute style this will be used as a mealy machine.
 module fsm #(parameter IDLE_STATE = 2'd0, 
              parameter FETCH_STATE = 2'd1, 
              parameter LOAD_REG_STATE = 2'd2, 
@@ -53,4 +54,3 @@ module fsm #(parameter IDLE_STATE = 2'd0,
     
     assign curr_state = current_state;
 endmodule
-

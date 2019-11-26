@@ -9,8 +9,6 @@ module simple_tb();
   reg         start_reg;
   reg  [4:0]  addr_reg;
   wire [4:0]  addr_in;
-  wire [7:0]  dout;
-  wire [7:0]  din;
   wire        re_en;
   wire        wr_en;
   wire        ram_read_en; //this is program read en
@@ -19,7 +17,7 @@ module simple_tb();
   reg  [15:0] data_in_reg;
   wire [15:0] ram_dout;
   wire [15:0] data_in;
-  wire [9:0]  pc; //this is addr to program ram
+  wire [6:0]  pc; //this is addr to program ram
   wire [15:0] result; //output the updated reg
   wire        start;
   wire        zero;
@@ -35,18 +33,19 @@ module simple_tb();
     //$dumpfile("hw2_q7.vcd");
     //$dumpvars(3, hw2_q7_tb);
     //initial values
-    $readmemh("data.txt", program_ram.ram_data);
-
     clk_10 <= 0;
     data_in_reg <= 0;
     reset <= 1;
     addr_reg <= 0;
     read_en_reg <= 0;
     write_en_reg <= 0;
-    #10
+    #10;
+    reset <= 0;
+    #20;
+    $readmemh("data.txt", program_ram.ram_data);
+    #20;
     //set wr_en to 1 and start for loop to load values
     start_reg <= 1;
-    reset <= 0;
     data_in_reg <= 0;
     write_en_reg <= 1;
     for(i = 0; i < 64000000; i=i+1) begin
@@ -72,7 +71,8 @@ module simple_tb();
     clk_10 = ~clk_10;
   end
 
-  ram_rw_16x1024 program_ram(
+  // ram_rw_16x1024 program_ram(
+  ram_rw_16x128 program_ram(
     .clk (clk),
     .rst_n (rst_n),
     .read_en(ram_read_en),
@@ -88,7 +88,7 @@ module simple_tb();
   assign data_in = ram_dout;
   assign start = start_reg;
   
-  simple_proc_data_proc proc(
+  proc proc(
     .clk (clk),
     .rst_n (rst_n),
     .start (start),
