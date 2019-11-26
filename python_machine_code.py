@@ -67,11 +67,14 @@ def alu(op1,op2,opcode,immediate,condition,cin,vin,zin,nin):
     if(opcode == 7):
         result = op1
     if(opcode == 8):
-        result = op1 >> (immediate and 0xF)
+        print("immediate: "+str(immediate & 0xF))
+        print("op1: " + str(op1))
+        result = rshift(op1,immediate & 0xF)
+        print("result" + str(result))
     if(opcode == 9):
-        result = op1 << (immediate and 0xF)
+        result = op1 << (immediate & 0xF)
     if(opcode == 10):
-        result = (op1 << (16 - (immediate and 0xF))) | (op1 >> (immediate and 0xF))
+        result = (op1 << (16 - (immediate & 0xF))) | (rshift(op1,immediate & 0xF))
     if(opcode == 11):
         result = op1-op2;
         print("result" + str(result))
@@ -94,7 +97,7 @@ def alu(op1,op2,opcode,immediate,condition,cin,vin,zin,nin):
         result = None
     print(result)
     print(opcode)
-    if((opcode == 1) or (opcode == 2) or (opcode == 0) or (opcode == 11)):
+    if((opcode == 1) or (opcode == 0) or (opcode == 11)):
         if(result >= 0):
             res['n'] = 0
         else:
@@ -106,7 +109,9 @@ def alu(op1,op2,opcode,immediate,condition,cin,vin,zin,nin):
         if(opcode != 2):
             res['v'] = v
             res['c'] = c
-    if((condition == 0) or ((condition == 1) and (zin == 0)) or ((condition == 2) and (nin == vin)) or ((condition == 3) and (nin != vin))):
+    if((condition == 0) or ((condition == 1) and (zin == 1)) or ((condition == 2) and (nin == vin)) or ((condition == 3) and (nin != vin))):
+        print("CONDITION: "+str(condition))
+        print("ZIN: "+str(zin))
         res['cond_succ']= 1
     else:
         res['cond_succ'] = 0
@@ -187,7 +192,7 @@ with open(text_file) as f:
             destination_reg = decode_line[1][1]
             if(decode_line[2][0] == "R"):
                 operand_1 = decode_line[2][1]
-                immediate_operand = 0
+                immediate_operand = "0"
                 if(opcode_string == "MOV"):
                     opcode = opcode + 1
             else:
@@ -202,11 +207,15 @@ with open(text_file) as f:
             din =str(condition)
             din+=str(opcode)
             if(opcode_string == "CMP"): #11 is compare and not move :)
-                din +='000'
-                din+=str(destination_reg) #for compare the first reg we found was actually the operand 1
-                din+=str(operand_1) #for compare operand1 was really operand2
-                operand_2 = format(int(destination_reg))
+                din+="000" #for compare the first reg we found was actually the operand 1
+                din+=str(destination_reg) #for compare operand1 was really operand2
+                din+=str(operand_1)
                 din+=(str(0)) #extra bit
+            elif(decode_line[2][0] == "R"):
+                din += str(destination_reg)
+                din += str(operand_1)
+                din += "000"
+                din += "0"
             else:
                 din+=str(destination_reg)
                 din+=str(immediate_operand)
@@ -217,6 +226,7 @@ with open(text_file) as f:
             condition = format(int(condition), '02b')
             opcode = format(opcode,'04b')
             operand_1 = format(int(operand_1),'03b')
+            operand_2 = format(int(operand_2),'03b')
             destination_reg = format(int(destination_reg), '03b')
             immediate_operand = format(int(immediate_operand),'04b')
             din =str(condition)
@@ -225,6 +235,7 @@ with open(text_file) as f:
             din+=str(operand_1)
             din+=str(immediate_operand)
         elif(opcode_string == "NOP"):
+            din = ""
             opcode = format(opcode,'04b')
             din ="00" #cond
             din+=str(opcode)#opcode
@@ -249,35 +260,7 @@ with open(text_file) as f:
             din+=str(operand_1)
             din+=str(operand_2)
             din+=(str(0)) #extra bit
-        
-        if(int(opcode,2) != 0xF):
-            alu_result = alu(reg[int(operand_1,2)],reg[int(operand_2,2)],int(opcode,2),int(immediate_operand,2),int(condition,2),c,v,z,n)
-            if(alu_result['cond_succ'] == 1):
-                print('succ')
-                if(alu_result['res'] != None):
-                    reg[int(destination_reg,2)] = alu_result['res']
-                elif(int(opcode,2) == 13): #load
-                    print('load')
-                    reg[int(destination_reg,2)] = mem[(reg[int(operand_1,2)] & 0x7F)]
-                elif(int(opcode,2) == 14): #store
-                    print('store')
-                    mem[(reg[int(operand_1,2)] & 0x7f)] = reg[int(destination_reg,2)]
-                if(int(opcode,2) == 0 and int(opcode,2) == 1 or int(opcode,2) == 2 or int(opcode,2) == 11):
-                    n = alu_result['n']
-                    z = alu_result['z']
-                    if(int(opcode,2) != 2):
-                        v = alu_result['v']
-                        c = alu_result['c']
-            print('c:'+str(c))
-            print('v:'+str(v))
-            print('z:'+str(z))
-            print('n:'+str(n))
-        print(din)
-            #print("data_in_reg <= 16'b"+din+";")
-        #print(din)
-        #print("#60")
         wr.write(hex(int(din,2))[2:]+"\n")
-        print(reg)
-        
-print(mem)
+
+#print(mem)
 wr.close()

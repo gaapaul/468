@@ -1,4 +1,4 @@
-module flag_sel(
+module flag_sel #(parameter mul_sets_flags = 0) (
   input wire [3:0] opcode,
   input wire [15:0] result,
   //input wire [1:0] condition_code,
@@ -17,7 +17,7 @@ module flag_sel(
   
   reg ovf_reg;
   reg c_reg;
-  assign update_flag_reg = (opcode == 4'd0 || opcode == 4'd1 || opcode == 4'd2 || opcode == 4'd11) ? 1'b1 : 1'b0;
+  assign update_flag_reg = ((opcode == 4'd0) || (opcode == 4'd1) || ((opcode == 4'd2) && (mul_sets_flags == 1'b1)) || (opcode == 4'd11)) ? 1'b1 : 1'b0;
   assign update_cv = (opcode == 4'd0 || opcode == 4'd1 || opcode == 4'd11) ? 1'b1 : 1'b0;
   always @(*) begin
       if(opcode == 4'd0) begin

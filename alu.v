@@ -142,7 +142,7 @@
     //outputs correct flag and if it should update
     //outputs if result should update
 
-  flag_sel flag_sel(
+  flag_sel #(.mul_sets_flags (1'b0))flag_sel(
    .opcode(opcode),
    .result(dout),
    .ovf_add (add_v),
@@ -179,7 +179,7 @@
         result_out <= 1'b0;
       end else begin
         result_out <= dout;
-      end  
+      end
     end
   end
   

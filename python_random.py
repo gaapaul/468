@@ -77,7 +77,7 @@ def alu(op1,op2,opcode,immediate,condition,cin,vin,zin,nin):
         result = None
     #print(result)
     #print(opcode)
-    if((opcode == 1) or (opcode == 2) or (opcode == 0) or (opcode == 11)):
+    if((opcode == 1) or (opcode == 0) or (opcode == 11)):
         if(result == 0 or result == None):
             res['n'] = 0
         elif(bit15(result)):
@@ -115,11 +115,11 @@ with open(text_file) as f:
     #for line in range(1,127):
     #for line in f:
     wr = open('data.txt',"w")
-    for line in range(0,1023):
-        linecnt = linecnt + 1
-        line = str(random.randint(0,65535))
-    #for line in f:
-    #    linecnt = 10
+    #for line in range(0,1023):
+    #    linecnt = linecnt + 1
+    #    line = str(random.randint(0,65535))
+    for line in f:
+        linecnt = 10
         bin_string = format(int(line,16),'016b')
         if(linecnt < 8):
             opcode = '0110'
@@ -139,7 +139,8 @@ with open(text_file) as f:
         output_string = condition+opcode+destination_reg+immediate_operand
         if(linecnt != 1022):
             wr.write(hex(int(output_string,2))[2:] + "\n")
-            print(output_string)
+            print(condition+" "+opcode+" "+destination_reg+" "+operand_1+" "+operand_2+" "+"0")
+            print(condition+" "+opcode+" "+destination_reg+" "+immediate_operand)
         else:
             wr.write('3c00\n')
         if(int(opcode,2) == 11):
@@ -159,12 +160,11 @@ with open(text_file) as f:
                 elif(int(opcode,2) == 14): #store
                     #print('store')
                     mem[(reg[int(operand_1,2)] & 0x7f)] = reg[int(destination_reg,2)]
-                if(int(opcode,2) == 0 or int(opcode,2) == 1 or int(opcode,2) == 2 or int(opcode,2) == 11):
+                if(int(opcode,2) == 0 or int(opcode,2) == 1 or int(opcode,2) == 1 or int(opcode,2) == 11):
                     n = alu_result['n']
                     z = alu_result['z']
-                    if(int(opcode,2) != 2):
-                        v = alu_result['v']
-                        c = alu_result['c']
+                    v = alu_result['v']
+                    c = alu_result['c']
             #else:
                 #print(operand_1)
                 #print(operand_2)
