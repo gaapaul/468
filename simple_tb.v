@@ -33,17 +33,19 @@ module simple_tb();
     //$dumpfile("hw2_q7.vcd");
     //$dumpvars(3, hw2_q7_tb);
     //initial values
-    $readmemh("data.txt", program_ram.ram_data);
     clk_10 <= 0;
     data_in_reg <= 0;
     reset <= 1;
     addr_reg <= 0;
     read_en_reg <= 0;
     write_en_reg <= 0;
-    #10
+    #10;
+    reset <= 0;
+    #20;
+    $readmemh("data.txt", program_ram.ram_data);
+    #20;
     //set wr_en to 1 and start for loop to load values
     start_reg <= 1;
-    reset <= 0;
     data_in_reg <= 0;
     write_en_reg <= 1;
     for(i = 0; i < 64000000; i=i+1) begin

@@ -72,3 +72,68 @@ module regfile_tb();
   );
 
 endmodule
+/*
+# wr_en:1, dest_reg: 0, din:13604
+# wr_en:0, dest_reg: 1, din:24193
+# wr_en:1, dest_reg: 2, din:54793
+# wr_en:0, dest_reg: 3, din:22115
+# wr_en:1, dest_reg: 4, din:31501
+# wr_en:0, dest_reg: 5, din:39309
+# wr_en:1, dest_reg: 6, din:33893
+# wr_en:0, dest_reg: 7, din:21010
+# wr_en:1, dest_reg: 0, din:58113
+# wr_en:0, dest_reg: 0, din:52493
+# wr_en:1, dest_reg: 1, din:61814
+# wr_en:0, dest_reg: 2, din:52541
+# wr_en:1, dest_reg: 3, din:22509
+# wr_en:0, dest_reg: 4, din:63372
+# wr_en:1, dest_reg: 5, din:59897
+# wr_en:0, dest_reg: 6, din: 9414
+# wr_en:1, dest_reg: 7, din:33989
+# Source0_addr: 0, Source0_value: 58113
+# Source1_addr: 0, Source1_value: 58113
+# Source0_addr: 2, Source0_value: 54793
+# Source1_addr: 5, Source1_value: 59897
+# Source0_addr: 7, Source0_value: 33989
+# Source1_addr: 2, Source1_value: 54793
+# Source0_addr: 7, Source0_value: 33989
+# Source1_addr: 2, Source1_value: 54793
+# Source0_addr: 6, Source0_value: 33893
+# Source1_addr: 0, Source1_value: 58113
+# Source0_addr: 5, Source0_value: 59897
+# Source1_addr: 4, Source1_value: 31501
+# Source0_addr: 5, Source0_value: 59897
+# Source1_addr: 5, Source1_value: 59897
+# Source0_addr: 5, Source0_value: 59897
+# Source1_addr: 3, Source1_value: 22509
+# Source0_addr: 2, Source0_value: 54793
+# Source1_addr: 0, Source1_value: 58113
+# Source0_addr: 0, Source0_value: 58113
+# Source1_addr: 2, Source1_value: 54793
+# Source0_addr: 5, Source0_value: 59897
+# Source1_addr: 6, Source1_value: 33893
+# Source0_addr: 3, Source0_value: 22509
+# Source1_addr: 5, Source1_value: 59897
+# Source0_addr: 3, Source0_value: 22509
+# Source1_addr: 3, Source1_value: 22509
+# Source0_addr: 5, Source0_value: 59897
+# Source1_addr: 2, Source1_value: 54793
+# Source0_addr: 6, Source0_value: 33893
+# Source1_addr: 5, Source1_value: 59897
+# Source0_addr: 7, Source0_value: 33989
+# Source1_addr: 3, Source1_value: 22509
+# Source0_addr: 2, Source0_value: 54793
+# Source1_addr: 2, Source1_value: 54793
+# Source0_addr: 4, Source0_value: 31501
+# Source1_addr: 2, Source1_value: 54793
+# Source0_addr: 2, Source0_value: 54793
+# Source1_addr: 1, Source1_value: 61814
+# Source0_addr: 0, Source0_value: 58113
+# Source1_addr: 0, Source1_value: 58113
+# Source0_addr: 1, Source0_value: 61814
+# Source1_addr: 3, Source1_value: 22509
+# Source0_addr: 6, Source0_value: 33893
+# Source1_addr: 6, Source1_value: 33893
+# Source0_addr: 6, Source0_value: 33893
+# Source1_addr: 4, Source1_value: 31501
+*/
