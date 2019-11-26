@@ -174,6 +174,7 @@ with open(text_file) as f:
         print('z:'+str(z))
         print('n:'+str(n))
         print(reg)
+        print(mem)
             #print("data_in_reg <= 16'b"+din+";")
         #print(din)
         #print("#60")
