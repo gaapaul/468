@@ -57,13 +57,13 @@ module simple_tb();
     data_in_reg <= 0;
     write_en_reg <= 1;
     for(i = 0; i < 64000000; i=i+1) begin
-      $display(" %b ",data_in);
+      $display(" %b ",ram_din0);
       $display("c:%d",carry);
       $display("v:%d",overflow);
       $display("z:%d",zero);
       $display("n:%d",negative);
-      $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
-      if (pc == 7'd10) begin
+      $monitor("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
+      if (pc == 9'd10) begin
         #60;
         $writememh("ram_file.txt", program_ram.ram_data);
         //$writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);

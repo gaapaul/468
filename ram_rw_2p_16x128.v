@@ -27,5 +27,5 @@ module ram_rw_2p_16x128(
     end
   end // always @ (posedge clk)
   assign dout0 = ram_dout0;
-  assign dout1 = ram_dout1;
+  assign dout1 = {9'b0,ram_dout1[6:0]}; //Instrucitons say to only load the least sig 7 bits
 endmodule
