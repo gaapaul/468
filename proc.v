@@ -76,7 +76,6 @@ module proc(
 
   ram_rw_16x128 ram_rw(
     .clk (clk),
-    .rst_n (rst_n),
     .read_en (read_ram_en),
     .write_en (write_ram_en),
     .addr     (rd0_data_out[6:0]),

@@ -55,7 +55,7 @@ module simple_tb();
       $display("z:%d",zero);
       $display("n:%d",negative);
       $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
-      if (ram_dout == 16'h3c00) begin
+      if (pc == 7'd127) begin
         #60;
         $writememh("ram_file.txt", proc.ram_rw.ram_data);
         //$writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);
@@ -74,7 +74,6 @@ module simple_tb();
   // ram_rw_16x1024 program_ram(
   ram_rw_16x128 program_ram(
     .clk (clk),
-    .rst_n (rst_n),
     .read_en(ram_read_en),
     .write_en(1'b0),
     .addr(pc),
