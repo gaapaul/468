@@ -3,14 +3,19 @@ module proc(
   input wire         clk,
   input wire         rst_n,
   input wire         start,
-  input wire  [15:0] data_in,
+  input wire  [15:0]  data_in,
+  input wire  [15:0]  data_ram_dout,
   output wire [15:0] result, //output the updated reg
   output wire        zero,
   output wire        negative,
   output wire        overflow,
   output wire        carry,
   output wire [6:0]  pc, //this is addr to program ram
-  output wire        ram_read_en); //this is program read en
+  output wire        prog_ram_read_en,
+  output wire        data_ram_read_en,
+  output wire        write_ram_en,
+  output wire [15:0] data_ram_din,
+  output wire [6:0] data_ram_addr);
   //State machine control
   localparam idle_fsm = 2'b0,
     fetch_fsm = 2'd1,
@@ -26,8 +31,8 @@ module proc(
   wire [2:0] operand2;
   //ram control
   wire write_back;
-  wire read_ram_en;
-  wire write_ram_en;
+  //wire read_ram_en;
+  //wire write_ram_en;
   wire [15:0] ram_dout;
   //Reg file control
   wire wr_en;
@@ -57,7 +62,7 @@ module proc(
     .clk (clk),
     .rst_n (rst_n),
     .state (current_state),
-    .pc_counter_re_en(ram_read_en),
+    .pc_counter_re_en(prog_ram_read_en),
     .pc_out (pc)
   );
 
@@ -70,10 +75,10 @@ module proc(
     .state(current_state),
     .condition_code_check(condition_code_success),
     .write_back_to_reg(write_back),
-    .ram_re_en(read_ram_en),
+    .ram_re_en(data_ram_read_en),
     .ram_wr_en(write_ram_en)
   );
-
+/*
   ram_rw_16x128 ram_rw(
     .clk (clk),
     .read_en (read_ram_en),
@@ -82,7 +87,7 @@ module proc(
     .dout     (ram_dout),
     .din      (rd1_data_out)
   );
-
+*/
   decoding input_decoder(
     .instruction(data_in),
     .zero(zero),
@@ -100,7 +105,7 @@ module proc(
   //Write back only high if opcode assigns a value to dest_reg
   assign wr_en = (current_state == fetch_fsm) ? write_back : 1'b0; 
   //If load then put ram in reg file else put alu_result in reg file
-  assign wr0_data_in = (opcode == 4'b1101) ? ram_dout : alu_result_out[15:0]; 
+  assign wr0_data_in = (opcode == 4'b1101) ? data_ram_dout : alu_result_out[15:0];
   //assign rd_en = (current_state == load_reg_fsm) ? 1'b1 : 1'b0;
   reg_file_8x16 reg_file_8x16_1 (
     .clk (clk),
@@ -129,5 +134,7 @@ module proc(
     .zero(zero)
   );
   //CPU
+  assign data_ram_din = rd0_data_out;
+  assign data_ram_addr = rd1_data_out[6:0];
   assign result = wr0_data_in;
 endmodule

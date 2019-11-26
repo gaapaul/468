@@ -1,11 +1,20 @@
 // memory data file (do not edit the following line - required for mem load use)
-// instance=/simple_tb/proc/ram_rw/ram_data
+// instance=/simple_tb/program_ram/ram_data
 // format=hex addressradix=h dataradix=h version=1.0 wordsperline=1 noaddress
-000c
-0003
+328c
+348a
+330d
+350c
+0194
+2622
+0a94
+2c4a
+5aff
+385c
 0000
-000e
-0005
+0000
+0004
+007f
 xxxx
 xxxx
 xxxx
@@ -13,15 +22,6 @@ xxxx
 xxxx
 xxxx
 xxxx
-003c
-000f
-00f0
-4001
-0014
-0014
-xxxx
-xxxx
-003c
 xxxx
 xxxx
 xxxx

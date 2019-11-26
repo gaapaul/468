@@ -182,10 +182,14 @@ with open(text_file) as f:
             din =str(condition)
             din+=str(opcode)
             din+=str(destination_reg)
-            if(opcode_string == "LDR" or opcode_string == "STR"):
+            if(opcode_string == "LDR"):
                 din+=str(operand_1)
                 din+=str(operand_2)
                 din+=(str(0)) #extra bit
+            elif(opcode_string == "STR"):
+                din+=str(destination_reg)
+                din+=str(operand_1)
+                din+="0"
             else:
                 din+=str(immediate_operand)
         elif(opcode_string == "MOV" or opcode_string == "CMP"):
