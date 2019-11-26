@@ -57,14 +57,8 @@ module simple_tb();
     data_in_reg <= 0;
     write_en_reg <= 1;
     for(i = 0; i < 64000000; i=i+1) begin
-      $display(" %b ",ram_din0);
-      $display("c:%d",carry);
-      $display("v:%d",overflow);
-      $display("z:%d",zero);
-      $display("n:%d",negative);
-      $monitor("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
-      if (pc == 9'd10) begin
-        #60;
+      if (pc == 10'd10) begin
+        #20
         $writememh("ram_file.txt", program_ram.ram_data);
         //$writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);
         $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
@@ -72,6 +66,15 @@ module simple_tb();
       end
       #20;
     end
+  end
+
+  always begin
+    #20
+    $display("Time:%d | Din: %b ",$time,ram_din0);
+    $display("Time:%d | c:%d, v:%d, z:%d, n:%d:",$time,proc.carry, proc.overflow,proc.zero,proc.negative);
+  end
+  initial begin
+    $monitor("Time:%d | R0 to R7 [%d,%d,%d,%d,%d,%d,%d,%d]",$time, proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
   end
 
   always begin
