@@ -118,11 +118,11 @@ def alu(op1,op2,opcode,immediate,condition,cin,vin,zin,nin):
     res['res'] = result
     return res
 
-#text_file = sys.argv[1]
-#print(text_file)
+text_file = sys.argv[1]
+print(text_file)
 reg = [None] * 8
 mem = [None] * 127
-with open('test_text.txt') as f:
+with open('text_file.txt') as f:
     wr = open('data.txt', "w")
     line_number = 0
     din = ""
