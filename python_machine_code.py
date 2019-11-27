@@ -264,6 +264,7 @@ with open(text_file) as f:
             din+=str(operand_1)
             din+=str(operand_2)
             din+=(str(0)) #extra bit
+        print(din)
         wr.write(hex(int(din,2))[2:]+"\n")
 
 #print(mem)
