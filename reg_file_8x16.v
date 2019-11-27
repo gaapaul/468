@@ -35,9 +35,9 @@ module reg_file_8x16 (
     end else begin : normal_logic_reg
       if(wr_en == 1'b1) begin //encoder
         case(wr0_addr)
-          4'b000: 
+          4'b000:
             r0 <= wr0_data;
-          4'b001: 
+          4'b001:
             r1 <= wr0_data;
           4'b010:
             r2 <= wr0_data;
@@ -45,11 +45,11 @@ module reg_file_8x16 (
             r3 <= wr0_data;
           4'b100:
             r4 <= wr0_data;
-          4'b101: 
+          4'b101:
             r5 <= wr0_data;
-          4'b110: 
+          4'b110:
             r6 <= wr0_data;
-          4'b111: 
+          4'b111:
             r7 <= wr0_data;
         endcase
       end
@@ -66,8 +66,8 @@ module reg_file_8x16 (
     .in6 (r6),
     .in7 (r7),
     .out (rd0_data)
-  );  
-  
+  );
+
   mux_3x8 mux_source_reg_2(
     .sel (rd1_addr),
     .in0 (r0),

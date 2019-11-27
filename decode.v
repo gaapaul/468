@@ -16,7 +16,6 @@ assign cond = instruction[15:14];
 assign opcode = instruction [13:10];
 assign dest_reg = instruction [9:7];
 assign source_reg1 = instruction [6:4];
-//if it is a store we need dest reg from reg file to store 
 assign source_reg2 = instruction[3:1];
 assign load_shift = instruction[6:0];
 

@@ -1,7 +1,7 @@
 //FSM follows a fetch,decode,execute style this will be used as a mealy machine.
-module fsm #(parameter IDLE_STATE = 2'd0, 
-             parameter FETCH_STATE = 2'd1, 
-             parameter LOAD_REG_STATE = 2'd2, 
+module fsm #(parameter IDLE_STATE = 2'd0,
+             parameter FETCH_STATE = 2'd1,
+             parameter LOAD_REG_STATE = 2'd2,
              parameter ALU_STATE = 2'd3) (
 
     input clk,
@@ -15,9 +15,9 @@ module fsm #(parameter IDLE_STATE = 2'd0,
     // Register/Current State Logic
     always@(posedge clk or negedge rst_n)
     begin
-      if (rst_n == 1'b0) 
+      if (rst_n == 1'b0)
         current_state <= IDLE_STATE;
-      else 
+      else
         current_state <= next_state;
     end
 
@@ -38,10 +38,10 @@ module fsm #(parameter IDLE_STATE = 2'd0,
         end
         // State to load registers and check condition code success
         LOAD_REG_STATE: begin
-          if (condition_code_check == 1'b1) 
+          if (condition_code_check == 1'b1)
             next_state = ALU_STATE;
           else
-            next_state = FETCH_STATE;	
+            next_state = FETCH_STATE;
         end
         // ALU calculation performed
         ALU_STATE: begin
@@ -51,6 +51,6 @@ module fsm #(parameter IDLE_STATE = 2'd0,
         default: next_state = IDLE_STATE;
       endcase
     end
-    
+
     assign curr_state = current_state;
 endmodule

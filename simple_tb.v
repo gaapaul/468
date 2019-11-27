@@ -5,18 +5,11 @@ module simple_tb();
   reg         clk_10;
   wire        clk;
   reg         reset;
-  //RAM
   reg         start_reg;
-  reg  [4:0]  addr_reg;
-  wire [4:0]  addr_in;
-  wire        re_en;
-  wire        wr_en;
   wire        ram_read_en0; //this is program read en
   wire        ram_read_en1;
   wire        ram_write_en1;
   wire 			  ram_write_en0;
-  reg         read_en_reg;
-  reg         write_en_reg;
   reg  [15:0] data_in_reg;
   wire [15:0] ram_dout;
   wire [15:0] ram_din0;
@@ -33,34 +26,23 @@ module simple_tb();
   wire        overflow;
   wire        carry;
   wire        rst_n;
-  //Clk assign 
+  //Clk assign
   assign clk = clk_10;
   assign rst_n = ~reset;
 
   initial begin
-    //$dumpfile("hw2_q7.vcd");
-    //$dumpvars(3, hw2_q7_tb);
-    //initial values
     clk_10 <= 0;
-    data_in_reg <= 0;
     reset <= 1;
-    addr_reg <= 0;
-    read_en_reg <= 0;
-    write_en_reg <= 0;
     #10;
     reset <= 0;
     #20;
-    $readmemb("data_test2.txt", program_ram.ram_data);
+    $readmemb("data.txt", program_ram.ram_data);
     #20;
-    //set wr_en to 1 and start for loop to load values
     start_reg <= 1;
-    data_in_reg <= 0;
-    write_en_reg <= 1;
     for(i = 0; i < 64000000; i=i+1) begin
-      if (pc == 10'd10) begin
-        #20
+      if (pc == 7'd9) begin
+        #60
         $writememh("ram_file.txt", program_ram.ram_data);
-        //$writememh("reg_file.txt", proc.reg_file_8x16_1.reg_file);
         $display("[%d,%d,%d,%d,%d,%d,%d,%d]", proc.reg_file_8x16_1.r0, proc.reg_file_8x16_1.r1,proc.reg_file_8x16_1.r2,proc.reg_file_8x16_1.r3,proc.reg_file_8x16_1.r4,proc.reg_file_8x16_1.r5,proc.reg_file_8x16_1.r6, proc.reg_file_8x16_1.r7);
         $finish;
       end
@@ -71,6 +53,7 @@ module simple_tb();
   always begin
     #20
     $display("Time:%d | Din: %b ",$time,ram_din0);
+    $display("Time:%d | Program Counter = %d",$time, pc);
     $display("Time:%d | c:%d, v:%d, z:%d, n:%d:",$time,proc.carry, proc.overflow,proc.zero,proc.negative);
   end
   initial begin
@@ -98,12 +81,7 @@ module simple_tb();
 
 );
 
-  assign addr_in = addr_reg;
-  assign re_en = read_en_reg;
-  assign wr_en = write_en_reg;
-  assign data_in = ram_dout;
   assign start = start_reg;
-  
   proc proc(
     .clk (clk),
     .rst_n (rst_n),

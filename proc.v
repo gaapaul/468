@@ -78,16 +78,7 @@ module proc(
     .ram_re_en(data_ram_read_en),
     .ram_wr_en(write_ram_en)
   );
-/*
-  ram_rw_16x128 ram_rw(
-    .clk (clk),
-    .read_en (read_ram_en),
-    .write_en (write_ram_en),
-    .addr     (rd0_data_out[6:0]),
-    .dout     (ram_dout),
-    .din      (rd1_data_out)
-  );
-*/
+
   decoding input_decoder(
     .instruction(data_in),
     .zero(zero),
@@ -103,7 +94,7 @@ module proc(
   );
 
   //Write back only high if opcode assigns a value to dest_reg
-  assign wr_en = (current_state == fetch_fsm) ? write_back : 1'b0; 
+  assign wr_en = (current_state == fetch_fsm) ? write_back : 1'b0;
   //If load then put ram in reg file else put alu_result in reg file
   assign wr0_data_in = (opcode == 4'b1101) ? data_ram_dout : alu_result_out[15:0];
   //assign rd_en = (current_state == load_reg_fsm) ? 1'b1 : 1'b0;
