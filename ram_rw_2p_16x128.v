@@ -15,11 +15,11 @@ module ram_rw_2p_16x128(
   reg [15:0]                       ram_dout0;
   reg [15:0]                       ram_dout1;
   always @(posedge clk) begin
-    if (write_en0 == 1'b1 && read_en0 == 1'b0) begin
-      ram_data[addr0] <= din0;
-    //end else if(write_en0 == 1'b0 && read_en0 == 1'b1) begin
-      //ram_dout0 <= ram_data[addr0];
-    //end
+    // if (write_en0 == 1'b1 && read_en0 == 1'b0) begin
+      // ram_data[addr0] <= din0;
+    if(write_en0 == 1'b0 && read_en0 == 1'b1) begin
+      ram_dout0 <= ram_data[addr0];
+    end
     if (write_en1 == 1'b1 && read_en1 == 1'b0) begin
       ram_data[addr1] <= din1;
     end else if(write_en1 == 1'b0 && read_en1 == 1'b1) begin
